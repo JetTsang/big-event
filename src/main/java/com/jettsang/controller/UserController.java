@@ -5,6 +5,7 @@ import com.jettsang.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.jettsang.pojo.User;
 //
@@ -15,8 +16,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+//    使用RequrestParams 进行参数重命名
     @PostMapping("/register")
-    public Result register(String username ,String pwd){
+    public Result register(String username , @RequestParam("password") String pwd){
 //  TODO:  查询用户，判断是否占用
     User user = userService.findByUserName(username);
     if(user == null){
