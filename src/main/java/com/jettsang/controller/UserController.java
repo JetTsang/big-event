@@ -2,7 +2,10 @@ package com.jettsang.controller;
 
 import com.jettsang.pojo.Result;
 import com.jettsang.service.UserService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,6 +14,7 @@ import com.jettsang.pojo.User;
 //
 @RestController
 @RequestMapping("/user")
+@Validated
 public class UserController {
 //    注入controller
     @Autowired
@@ -18,11 +22,10 @@ public class UserController {
 
 //    使用RequrestParams 进行参数重命名
     @PostMapping("/register")
-    public Result register(String username , @RequestParam("password") String pwd){
-//  TODO:  查询用户，判断是否占用
+    public Result register(@Pattern(regexp = "^\\S{5,16}$") String username ,@Pattern(regexp = "^\\S{5,16}$") @RequestParam("password") String pwd){
+//    TODO: 这里有异常了，需要进行全局异常处理
     User user = userService.findByUserName(username);
     if(user == null){
-//  TODO: 注册逻辑
         userService.register(username,pwd);
         return Result.success();
     }else{
