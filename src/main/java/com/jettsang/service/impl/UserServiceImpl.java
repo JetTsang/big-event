@@ -28,4 +28,6 @@ public class UserServiceImpl implements UserService {
 //        TODO：调用mapper方法去插入
         userMapper.add(name,md5Pwd);
     }
+
+
 }

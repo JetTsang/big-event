@@ -2,6 +2,8 @@ package com.jettsang.controller;
 
 import com.jettsang.pojo.Result;
 import com.jettsang.service.UserService;
+import com.jettsang.utils.JWTUtil;
+import com.jettsang.utils.Md5Util;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.jettsang.pojo.User;
+
+import java.util.HashMap;
+import java.util.Map;
+
 //
 @RestController
 @RequestMapping("/user")
@@ -35,6 +41,24 @@ public class UserController {
 
 
 
+    }
+
+//    登录接口
+    @PostMapping("/login")
+    public Result login(String username,String password){
+        User user = userService.findByUserName(username);
+        if(user == null){
+            return Result.error("用户名或密码错误");
+        }
+        ;
+        if(Md5Util.checkPassword(password,user.getPassword())){
+            Map<String,Object> claims = new HashMap<>();
+            claims.put("id",user.getId());
+            claims.put("username",user.getUsername());
+            String token = JWTUtil.getToken(claims);
+            return Result.success(token);
+        }
+        return Result.error("未知错误");
     }
 
 }
