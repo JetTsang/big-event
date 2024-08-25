@@ -8,10 +8,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.jettsang.pojo.User;
 
 import java.util.HashMap;
@@ -61,4 +58,12 @@ public class UserController {
         return Result.error("未知错误");
     }
 
+    @GetMapping("/userInfo")
+    public Result userInfo(@RequestHeader("Authorization") String token){
+//        解析token
+        Map<String,Object> claims = JWTUtil.parseToken(token);
+        String username = (String) claims.get("username");
+        User user = userService.findByUserName(username);
+        return Result.success(user);
+    }
 }
