@@ -1,6 +1,7 @@
 package com.jettsang.interceptors;
 
 import com.jettsang.utils.JWTUtil;
+import com.jettsang.utils.ThreadLocalUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,8 @@ public class LoginInterceptor implements HandlerInterceptor {
         try {
             String token = request.getHeader("Authorization");
             Map<String,Object> claims =  JWTUtil.parseToken(token);
+//            加入到 threadlocal里面
+            ThreadLocalUtil.set(claims);
             System.out.printf(claims.toString());
             return true;
         }catch (Exception e){
@@ -27,6 +30,12 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     }
 
-//    先编写方法
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+//        移除对应存储的内容，防止内存泄漏
+        ThreadLocalUtil.remove();
+    }
+
+    //    先编写方法
 //    然后到config里面注册
 }

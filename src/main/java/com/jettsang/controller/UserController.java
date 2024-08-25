@@ -4,6 +4,7 @@ import com.jettsang.pojo.Result;
 import com.jettsang.service.UserService;
 import com.jettsang.utils.JWTUtil;
 import com.jettsang.utils.Md5Util;
+import com.jettsang.utils.ThreadLocalUtil;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,9 +60,13 @@ public class UserController {
     }
 
     @GetMapping("/userInfo")
-    public Result userInfo(@RequestHeader("Authorization") String token){
+//    public Result userInfo(@RequestHeader("Authorization") String token){
+//    获取用户信息
+    public Result userInfo(){
+
 //        解析token
-        Map<String,Object> claims = JWTUtil.parseToken(token);
+//        Map<String,Object> claims = JWTUtil.parseToken(token);
+        Map<String,Object> claims = ThreadLocalUtil.get();
         String username = (String) claims.get("username");
         User user = userService.findByUserName(username);
         return Result.success(user);
